@@ -1,0 +1,47 @@
+<suite name="API Automation Regression Suite" thread-count="1" verbose="4">
+
+	<test name="Go Rest Post  API Test Schema validation">
+		<parameter name="baseURI" value="https://gorest.co.in" />
+		<classes>
+			<class name="com.qa.gorest.tests.APISchemaValidation" />
+		</classes>
+	</test>
+
+	<test name="Go Rest Post  API Test">
+		<parameter name="baseURI" value="https://gorest.co.in" />
+		<classes>
+			<class name="com.qa.gorest.tests.PostTestUser" />
+		</classes>
+	</test>
+
+	<test name="Go Rest Get API Test">
+		<parameter name="baseURI" value="https://gorest.co.in" />
+		<classes>
+			<class name="com.qa.gorest.tests.GetTestUser" />
+		</classes>
+	</test>
+
+	<test name="HTTP Bin  Get API Test">
+		<parameter name="baseURI" value="https://httpbin.org/" />
+		<classes>
+			<class name="com.qa.gorest.tests.HTTPGetTest" />
+		</classes>
+	</test>
+
+<!--<test name="Amadeus API Fight Details Test">
+		<parameter name="baseURI" value="https://test.api.amadeus.com" />
+		<parameter name="grantType" value="client_credentials" />
+		<parameter name="clientId" value="uiJy8vSPpuRKHZrVjQ6xLH12saOpIaDj" />
+		<parameter name="clientSecret" value="SkficSinsQUpqFEj" />
+		<classes>
+			<class name="com.qa.gorest.tests.AmadeusAPITest" />
+		</classes>
+	</test>-->
+
+	<test name="FAKE STORE PRODUCT API Test">
+		<parameter name="baseURI" value="https://fakestoreapi.com" />
+		<classes>
+			<class name="com.qa.gorest.tests.GetProductAPITest" />
+		</classes>
+	</test>
+</suite>
