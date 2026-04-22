@@ -23,7 +23,7 @@ public class GetProductAPITest extends BaseTest{
 	}
 	
 	
-	@Test
+	@Test(description = "We are getting the product detials ")
 	public void productInfoTest() {
 		Response res=rc.getRequest(FAKESTORE_PRODUCT_ENDPOINT,true,false);
 		int statusCode=res.statusCode();

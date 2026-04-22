@@ -37,7 +37,7 @@ public class PostTestUser extends BaseTest {
 		return obj;
 	}
 	
-	@Test(dataProvider="getTestDataFromExcelSheet")
+	@Test(dataProvider="getTestDataFromExcelSheet", description = "Creating the Details for GoRest ")
 	public void createUser(String name,String gender, String status) {
 		
 		
