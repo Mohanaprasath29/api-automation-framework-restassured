@@ -1,0 +1,16 @@
+<suite name="API Automation Regression Suite" thread-count="1" verbose="4">
+
+	<test name="Go Rest Post  API Test Schema validation">
+		<parameter name="baseURI" value="https://gorest.co.in" />
+		<classes>
+			<class name="com.qa.gorest.tests.APISchemaValidation" />
+		</classes>
+	</test>
+
+	<test name="Go Rest Post  API Test">
+		<parameter name="baseURI" value="https://gorest.co.in" />
+		<classes>
+			<class name="com.qa.gorest.tests.PostTestUser" />
+		</classes>
+	</test>
+</suite>
