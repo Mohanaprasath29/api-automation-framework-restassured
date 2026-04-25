@@ -35,7 +35,7 @@ pipeline {
                 script {
                     echo "Starting Regression Tests in Docker container..."
                     
-                    def exitCode = sh(
+                    def exitCode = bat(
                         script: """
                             docker run --name apitesting${BUILD_NUMBER} \
                             -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml' \
@@ -49,9 +49,9 @@ pipeline {
                     }
 
                     // Copy allure-results from container (if available)
-                    sh "docker start apitesting${BUILD_NUMBER} || true"
-                    sh "docker cp apitesting${BUILD_NUMBER}:/app/allure-results ${WORKSPACE}/allure-results || true"
-                    sh "docker rm -f apitesting${BUILD_NUMBER} || true"
+                    bat "docker start apitesting${BUILD_NUMBER} || true"
+                    bat "docker cp apitesting${BUILD_NUMBER}:/app/allure-results ${WORKSPACE}/allure-results || true"
+                    bat "docker rm -f apitesting${BUILD_NUMBER} || true"
                 }
             }
         }
@@ -82,7 +82,7 @@ pipeline {
                 script {
                     echo "Starting Sanity Tests in Docker container..."
                     
-                    def exitCode = sh(
+                    def exitCode = bat(
                         script: """
                             docker run --name apitesting_sanity${BUILD_NUMBER} \
                             -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml' \
@@ -96,7 +96,7 @@ pipeline {
                     }
 
                     // Clean up container, but no report publishing
-                    sh "docker rm -f apitesting_sanity${BUILD_NUMBER} || true"
+                    bat "docker rm -f apitesting_sanity${BUILD_NUMBER} || true"
                 }
             }
         }
