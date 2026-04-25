@@ -1,15 +1,17 @@
-# Use a base image with Maven and Java 17
-FROM maven:3.8.3-openjdk-17
-
-# Set the working directory inside the container
+# -------- STAGE 1: BUILD + TEST --------
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the Maven project files into the container
 COPY pom.xml .
-COPY src ./src
+RUN mvn dependency:go-offline
 
-# Switch to the directory containing the pom.xml
+COPY src ./src
+RUN mvn clean verify
+
+# -------- STAGE 2: SMALL FINAL IMAGE --------
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Run Maven tests
-CMD ["mvn", "test"]
+COPY --from=build /app/target/*.jar app.jar
+
+CMD ["java", "-jar", "app.jar"]
