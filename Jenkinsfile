@@ -34,12 +34,15 @@ pipeline {
             steps {
                 script {
                     echo "Starting Regression Tests in Docker container..."
-                    
+
+                    // Remove old container if exists
+                    bat "docker rm -f apitesting${BUILD_NUMBER} 2>nul"
+
                     def exitCode = bat(
                         script: """
-                            docker run --name apitesting${BUILD_NUMBER} /
-                            -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml' /
-                            mohanaprasath29/apirestassuredframeworklatest:latest
+docker run --name apitesting${BUILD_NUMBER} ^
+-e MAVEN_OPTS=-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml ^
+mohanaprasath29/apirestassuredframeworklatest:latest
                         """,
                         returnStatus: true
                     )
@@ -48,10 +51,11 @@ pipeline {
                         currentBuild.result = 'FAILURE'
                     }
 
-                    // Copy allure-results from container (if available)
-                    bat "docker start apitesting${BUILD_NUMBER} || true"
-                    bat "docker cp apitesting${BUILD_NUMBER}:/app/allure-results ${WORKSPACE}/allure-results || true"
-                    bat "docker rm -f apitesting${BUILD_NUMBER} || true"
+                    // Copy reports
+                    bat "docker cp apitesting${BUILD_NUMBER}:/app/allure-results %WORKSPACE%\\allure-results"
+
+                    // Remove container
+                    bat "docker rm -f apitesting${BUILD_NUMBER}"
                 }
             }
         }
@@ -81,12 +85,14 @@ pipeline {
             steps {
                 script {
                     echo "Starting Sanity Tests in Docker container..."
-                    
+
+                    bat "docker rm -f apitesting_sanity${BUILD_NUMBER} 2>nul"
+
                     def exitCode = bat(
                         script: """
-                            docker run --name apitesting_sanity${BUILD_NUMBER} /
-                            -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml' /
-                            mohanaprasath29/apirestassuredframeworklatest:latest
+docker run --name apitesting_sanity${BUILD_NUMBER} ^
+-e MAVEN_OPTS=-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml ^
+mohanaprasath29/apirestassuredframeworklatest:latest
                         """,
                         returnStatus: true
                     )
@@ -95,8 +101,7 @@ pipeline {
                         currentBuild.result = 'FAILURE'
                     }
 
-                    // Clean up container, but no report publishing
-                    bat "docker rm -f apitesting_sanity${BUILD_NUMBER} || true"
+                    bat "docker rm -f apitesting_sanity${BUILD_NUMBER}"
                 }
             }
         }
