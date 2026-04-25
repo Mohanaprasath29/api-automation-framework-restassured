@@ -14,7 +14,7 @@ pipeline {
         stage('Build') {
             steps {
                 git 'https://github.com/jglick/simple-maven-project-with-tests.git'
-                bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
             post {
                 success {
@@ -35,10 +35,10 @@ pipeline {
                 script {
                     echo "Starting Regression Tests in Docker container..."
                     
-                    def exitCode = bat(
+                    def exitCode = sh(
                         script: """
                             docker run --name apitesting${BUILD_NUMBER} \
-                            -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml' \
+                            -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src\test\resources\testrunners\testng_regression.xml' \
                             mohanaprasath29/apirestassuredframeworklatest:latest
                         """,
                         returnStatus: true
@@ -49,9 +49,9 @@ pipeline {
                     }
 
                     // Copy allure-results from container (if available)
-                    bat "docker start apitesting${BUILD_NUMBER} || true"
-                    bat "docker cp apitesting${BUILD_NUMBER}:/app/allure-results ${WORKSPACE}/allure-results || true"
-                    bat "docker rm -f apitesting${BUILD_NUMBER} || true"
+                    sh "docker start apitesting${BUILD_NUMBER} || true"
+                    sh "docker cp apitesting${BUILD_NUMBER}:/app/allure-results ${WORKSPACE}/allure-results || true"
+                    sh "docker rm -f apitesting${BUILD_NUMBER} || true"
                 }
             }
         }
@@ -82,10 +82,10 @@ pipeline {
                 script {
                     echo "Starting Sanity Tests in Docker container..."
                     
-                    def exitCode = bat(
+                    def exitCode = sh(
                         script: """
                             docker run --name apitesting_sanity${BUILD_NUMBER} \
-                            -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml' \
+                            -e MAVEN_OPTS='-Dsurefire.suiteXmlFiles=src\test\resources\testrunners\testng_sanity.xml' \
                             mohanaprasath29/apirestassuredframeworklatest:latest
                         """,
                         returnStatus: true
@@ -96,7 +96,7 @@ pipeline {
                     }
 
                     // Clean up container, but no report publishing
-                    bat "docker rm -f apitesting_sanity${BUILD_NUMBER} || true"
+                    sh "docker rm -f apitesting_sanity${BUILD_NUMBER} || true"
                 }
             }
         }
